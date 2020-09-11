@@ -6,10 +6,12 @@ namespace Statistics
    
     public class StatsComputer
     {
-
-        public Double average;
-        public Double max;
-        public Double min;
+        #region DataMembers
+        Double average;
+        Double max;
+        Double min;
+        #endregion
+        #region Methods
         public Double  ComputAverage<T>(List<T> numbers)
         {
             Double sum = 0;
@@ -46,6 +48,29 @@ namespace Statistics
             }
             
         }
-
+        #endregion
+        #region Properties
+        public Double Average
+        {
+            get
+            {
+                return this.average;
+            }
+        }
+        public Double Max
+        {
+            get
+            {
+                return this.max;
+            }
+        }
+        public Double Min
+        {
+            get
+            {
+                return this.min;
+            }
+        }
+        #endregion
     }
 }
