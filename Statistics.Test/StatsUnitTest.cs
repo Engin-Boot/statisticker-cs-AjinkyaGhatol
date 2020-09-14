@@ -14,25 +14,44 @@ namespace Statistics.Test
             this._output = output;
         }
         #endregion
-        
+
         #region ReportsNaNForEmptyInput
         [Fact]
-        public void ReportsNaNForEmptyInput()
+        public void WhenInputIsEmptyThenComputeAllAsNAN()
         {
             var statsComputer = new StatsComputer();
             statsComputer.CalculateStatistics(
-                new List<float>{});
+                new List<float> { });
             //All fields of computedStats (average, max, min) must be
             //Double.NaN (not-a-number), as described in
             //https://docs.microsoft.com/en-us/dotnet/api/system.double.nan?view=netcore-3.1
-            
+
             _output.WriteLine("Average:{0},Max:{1},Min:{2}", statsComputer.Average, statsComputer.Max, statsComputer.Min);
             Assert.True(Double.IsNaN(statsComputer.Average));
             Assert.True(Double.IsNaN(statsComputer.Max));
             Assert.True(Double.IsNaN(statsComputer.Min));
         }
         #endregion
-        
+        #region DoubleData
+        public static IEnumerable<object[]> DoubleDataHasNan =>
+        new List<object[]>
+        {
+            new object[] { new List<Double>{ 1.5, 8.9, Double.NaN, 4.5 }, 4.966, 8.9 ,1.5},
+        };
+        #endregion
+        [Theory]
+        [MemberData(nameof(DoubleDataHasNan))]
+        public void WhenInputIsNotEmptyAndContainsNANComputeStats<T>(List<T> numbers, Double average_real, Double max_real, Double min_real)
+        {
+            var statsComputer = new StatsComputer();
+            statsComputer.CalculateStatistics(
+                numbers);
+            float epsilon = 0.001F;
+            _output.WriteLine("Average:{0},Max:{1},Min:{2},{3}", statsComputer.Average, statsComputer.Max, statsComputer.Min, average_real);
+            Assert.True(Math.Abs(statsComputer.Average - average_real) <= epsilon);
+            Assert.True(Math.Abs(statsComputer.Max - max_real) <= epsilon);
+            Assert.True(Math.Abs(statsComputer.Min - min_real) <= epsilon);
+        }
         #region IntData
         public static IEnumerable<object[]> IntData =>
         new List<object[]>
@@ -59,18 +78,18 @@ namespace Statistics.Test
         [MemberData(nameof(IntData))]
         [MemberData(nameof(FloatData))]
         [MemberData(nameof(DoubleData))]
-        public void ReportsAverageMinMax<T>(List<T> numbers,Double average_real,Double max_real,Double min_real)
+        public void WhenInputIsNotEmptyAndDoesNotContainsNANComputeStats<T>(List<T> numbers, Double average_real, Double max_real, Double min_real)
         {
             var statsComputer = new StatsComputer();
             statsComputer.CalculateStatistics(
                 numbers);
             float epsilon = 0.001F;
-            _output.WriteLine("Average:{0},Max:{1},Min:{2},{3}", statsComputer.Average, statsComputer.Max, statsComputer.Min,average_real);
+            _output.WriteLine("Average:{0},Max:{1},Min:{2},{3}", statsComputer.Average, statsComputer.Max, statsComputer.Min, average_real);
             Assert.True(Math.Abs(statsComputer.Average - average_real) <= epsilon);
             Assert.True(Math.Abs(statsComputer.Max - max_real) <= epsilon);
             Assert.True(Math.Abs(statsComputer.Min - min_real) <= epsilon);
         }
-        
+
     }
 }
 //to do store min and max in T datatype

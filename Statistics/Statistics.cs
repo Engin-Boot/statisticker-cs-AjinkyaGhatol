@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Statistics
 {
-   
+
     public class StatsComputer
     {
         #region DataMembers
@@ -12,16 +12,15 @@ namespace Statistics
         Double min;
         #endregion
         #region Methods
-        public Double  ComputAverage<T>(List<T> numbers)
+        public Double ComputAverage<T>(List<T> numbers)
         {
             Double sum = 0;
-            
-                int size = numbers.Count;
-            for (int i = 0; i<size; i++)
+            int size = numbers.Count;
+            for (int i = 0; i < size; i++)
             {
-                sum = sum+Convert.ToDouble(numbers.ElementAt(i));
+                sum += Convert.ToDouble(numbers.ElementAt(i));
             }
-            return sum / size;
+            return sum / (size);
         }
         public Double ComputMax<T>(List<T> numbers)
         {
@@ -41,12 +40,26 @@ namespace Statistics
                 max = Double.NaN;
             }
             else
-            {   
-                average = ComputAverage(numbers);
-                max = ComputMax(numbers);
-                min = ComputMin(numbers);
+            {
+                List<T> numbersNew = new List<T>();
+                numbersNew = genarateNewNumberListWhichHasNoNAN(numbers);
+                average = ComputAverage(numbersNew);
+                max = ComputMax(numbersNew);
+                min = ComputMin(numbersNew);
             }
-            
+
+        }
+        public List<T> genarateNewNumberListWhichHasNoNAN<T>(List<T> numbers)
+        {
+            List<T> numbersNew = new List<T>();
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                if (!Double.IsNaN(Convert.ToDouble(numbers.ElementAt(i))))
+                {
+                    numbersNew.Add(numbers.ElementAt(i));
+                }
+            }
+            return numbersNew;
         }
         #endregion
         #region Properties
